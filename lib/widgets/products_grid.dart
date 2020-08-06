@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../models/product.dart';
+import '../providers/product.dart';
 import './product_item.dart';
 
 import '../providers/products_provider.dart';
@@ -19,10 +19,9 @@ class ProductsGrid extends StatelessWidget {
       itemCount: loadedProducts.length,
       itemBuilder: (context, index) {
         final Product product = loadedProducts[index];
-        return ProductItem(
-          id: product.id,
-          imageUrl: product.imageUrl,
-          title: product.title,
+        return ChangeNotifierProvider(
+          create: (_) => product,
+          child: ProductItem(),
         );
       },
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
