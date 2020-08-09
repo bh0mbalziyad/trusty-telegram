@@ -19,8 +19,8 @@ class ProductsGrid extends StatelessWidget {
       itemCount: loadedProducts.length,
       itemBuilder: (context, index) {
         final Product product = loadedProducts[index];
-        return ChangeNotifierProvider(
-          create: (_) => product,
+        return ChangeNotifierProvider.value(
+          value: product,
           child: ProductItem(),
         );
       },
@@ -32,5 +32,5 @@ class ProductsGrid extends StatelessWidget {
         mainAxisSpacing: 10, // spacing between rows
       ),
     );
-  }
-}
+  } // build
+} // ProductsGrid
