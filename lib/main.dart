@@ -24,6 +24,7 @@ class MyApp extends StatelessWidget {
         ),
         routes: {
           '/': (_) => ProductsOverviewScreen(),
+          ProductsOverviewScreen.routeName: (_) => ProductsOverviewScreen(),
           ProductDetailScreen.routeName: (_) => ProductDetailScreen(),
         },
       ),
