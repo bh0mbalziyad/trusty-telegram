@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import "package:provider/provider.dart";
 
+import '../providers/cart_provider.dart';
 import '../widgets/products_grid.dart';
+import '../widgets/badge.dart';
 
 enum PopUpMenuSelectedItem {
   OnlyFavorites,
@@ -19,6 +22,8 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // final cart = Provider.of<CartProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('MyShop'),
@@ -51,6 +56,16 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
                 value: PopUpMenuSelectedItem.ShowAll,
               )
             ],
+          ),
+          Consumer<CartProvider>(
+            builder: (_, cart, child) => Badge(
+              child: child,
+              value: cart.itemCount.toString(),
+            ),
+            child: IconButton(
+              icon: Icon(Icons.shopping_cart),
+              onPressed: () {},
+            ),
           ),
         ],
       ),

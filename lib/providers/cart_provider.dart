@@ -21,11 +21,28 @@ class CartProvider with ChangeNotifier {
     return {..._items};
   }
 
+  int get itemCount {
+    if (_items == null) return 0;
+    return _items.length;
+  }
+
+  // TODO: Fix this function
   void addItemToCart({
     @required String productId,
     @required double price,
     @required String title,
   }) {
+    if (_items == null) {
+      _items.putIfAbsent(
+          productId,
+          () => Cart(
+                id: DateTime.now().toString(),
+                title: title,
+                quantity: 1,
+                price: price,
+              ));
+      notifyListeners();
+    }
     if (_items.containsKey(productId)) {
       // increase quantity
       _items.update(
@@ -39,15 +56,5 @@ class CartProvider with ChangeNotifier {
       notifyListeners();
       return;
     }
-
-    _items.putIfAbsent(
-        productId,
-        () => Cart(
-              id: DateTime.now().toString(),
-              title: title,
-              quantity: 1,
-              price: price,
-            ));
-    notifyListeners();
   }
 }
