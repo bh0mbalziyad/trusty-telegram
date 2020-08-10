@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'product.dart';
 
 class ProductsProvider with ChangeNotifier {
-  bool _showFavoritesOnly = false;
+  // bool _showFavoritesOnly = false;
 
   List<Product> _items = [
     Product(
@@ -41,8 +41,12 @@ class ProductsProvider with ChangeNotifier {
   ];
 
   List<Product> get items {
-    if (!_showFavoritesOnly) return [..._items];
-    return _items.where((product) => product.isFavorite).toList();
+    // if (_showFavoritesOnly) return _items.where((product) => product.isFavorite).toList();
+    return [..._items];
+  }
+
+  List<Product> get favoriteItems {
+    return _items.where((element) => element.isFavorite).toList();
   }
 
   Product findById(String id) {
@@ -54,13 +58,13 @@ class ProductsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void showFavorites() {
-    _showFavoritesOnly = true;
-    notifyListeners();
-  }
+  // void showFavorites() {
+  //   _showFavoritesOnly = true;
+  //   notifyListeners();
+  // }
 
-  void showAll() {
-    _showFavoritesOnly = false;
-    notifyListeners();
-  }
+  // void showAll() {
+  //   _showFavoritesOnly = false;
+  //   notifyListeners();
+  // }
 }

@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import "package:provider/provider.dart";
-import '../providers/products_provider.dart';
 
 import '../widgets/products_grid.dart';
 
@@ -9,13 +7,18 @@ enum PopUpMenuSelectedItem {
   ShowAll,
 }
 
-class ProductsOverviewScreen extends StatelessWidget {
+class ProductsOverviewScreen extends StatefulWidget {
   static const String routeName = "/products-overview";
 
   @override
+  _ProductsOverviewScreenState createState() => _ProductsOverviewScreenState();
+}
+
+class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
+  bool _showFavorites = false;
+
+  @override
   Widget build(BuildContext context) {
-    final productContainer =
-        Provider.of<ProductsProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: const Text('MyShop'),
@@ -24,10 +27,14 @@ class ProductsOverviewScreen extends StatelessWidget {
             onSelected: (selectedValue) {
               switch (selectedValue) {
                 case PopUpMenuSelectedItem.OnlyFavorites:
-                  productContainer.showFavorites();
+                  setState(() {
+                    _showFavorites = true;
+                  });
                   break;
                 case PopUpMenuSelectedItem.ShowAll:
-                  productContainer.showAll();
+                  setState(() {
+                    _showFavorites = false;
+                  });
                   break;
                 default:
                   return;
@@ -48,8 +55,7 @@ class ProductsOverviewScreen extends StatelessWidget {
         ],
       ),
       // backgroundColor: ,
-      body: ProductsGrid(),
+      body: ProductsGrid(_showFavorites),
     );
-  } //build
-
+  }
 } //ProductsOverviewScreen
