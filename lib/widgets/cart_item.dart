@@ -1,13 +1,18 @@
 import "package:flutter/material.dart";
+import "package:provider/provider.dart";
+
+import "../providers/cart_provider.dart";
 
 class CartItem extends StatelessWidget {
   final String id;
+  final String productId;
   final double price;
   final int quantity;
   final String title;
 
   CartItem({
     @required this.id,
+    @required this.productId,
     @required this.price,
     @required this.quantity,
     @required this.title,
@@ -19,6 +24,19 @@ class CartItem extends StatelessWidget {
       key: ValueKey(id),
       background: Container(
         color: Theme.of(context).errorColor,
+        child: Icon(
+          Icons.delete,
+          color: Colors.white,
+          size: 40,
+        ),
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.only(
+          right: 20,
+        ),
+        margin: const EdgeInsets.symmetric(
+          horizontal: 15,
+          vertical: 4,
+        ),
       ),
       child: Card(
         margin: const EdgeInsets.symmetric(
@@ -42,6 +60,15 @@ class CartItem extends StatelessWidget {
           ),
         ),
       ),
+      direction: DismissDirection.endToStart,
+      onDismissed: (direction) {
+        if (direction != DismissDirection.endToStart) return;
+        // Logic to remove the cart item from memory
+        Provider.of<CartProvider>(
+          context,
+          listen: false,
+        ).removeItemFromCart(productId);
+      },
     );
   }
 }

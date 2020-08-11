@@ -32,8 +32,10 @@ class CartScreen extends StatelessWidget {
     return ListView.builder(
       itemBuilder: (_, index) {
         final cartItem = cart.items.values.toList()[index];
+        final productId = cart.items.keys.toList()[index];
         return CartItem(
           id: cartItem.id,
+          productId: productId,
           price: cartItem.price,
           quantity: cartItem.quantity,
           title: cartItem.title,
@@ -72,8 +74,7 @@ class CartScreen extends StatelessWidget {
             FlatButton(
               child: Text(
                 'ORDER NOW',
-                style: TextStyle(
-                    color: Theme.of(context).textTheme.headline6.color),
+                style: TextStyle(color: Theme.of(context).primaryColor),
               ),
               onPressed: () {},
             ),

@@ -39,6 +39,7 @@ class CartProvider with ChangeNotifier {
     @required double price,
     @required String title,
   }) {
+    // item already exists in Map
     if (_items.containsKey(productId)) {
       // increase quantity
       _items.update(
@@ -61,6 +62,11 @@ class CartProvider with ChangeNotifier {
               quantity: 1,
               price: price,
             ));
+    notifyListeners();
+  }
+
+  void removeItemFromCart(String productId) {
+    _items.remove(productId);
     notifyListeners();
   }
 }
