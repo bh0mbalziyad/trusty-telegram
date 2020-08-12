@@ -4,6 +4,7 @@ import "package:provider/provider.dart";
 import '../providers/cart_provider.dart';
 import '../widgets/products_grid.dart';
 import '../widgets/badge.dart';
+import '../widgets/app_drawer.dart';
 import '../screens/cart_screen.dart';
 
 enum PopUpMenuSelectedItem {
@@ -72,6 +73,7 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
           ),
         ],
       ),
+      drawer: AppDrawer(),
       // backgroundColor: ,
       body: ProductsGrid(_showFavorites),
     );
