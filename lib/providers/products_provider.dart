@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../models/product.dart';
+import 'product.dart';
 
 class ProductsProvider with ChangeNotifier {
+  // bool _showFavoritesOnly = false;
+
   List<Product> _items = [
     Product(
       id: 'p1',
@@ -39,7 +41,12 @@ class ProductsProvider with ChangeNotifier {
   ];
 
   List<Product> get items {
-    return [..._items]; // return a copy to follow Redux like patterns
+    // if (_showFavoritesOnly) return _items.where((product) => product.isFavorite).toList();
+    return [..._items];
+  }
+
+  List<Product> get favoriteItems {
+    return _items.where((element) => element.isFavorite).toList();
   }
 
   Product findById(String id) {
@@ -50,4 +57,14 @@ class ProductsProvider with ChangeNotifier {
     // _items.add(value);
     notifyListeners();
   }
+
+  // void showFavorites() {
+  //   _showFavoritesOnly = true;
+  //   notifyListeners();
+  // }
+
+  // void showAll() {
+  //   _showFavoritesOnly = false;
+  //   notifyListeners();
+  // }
 }
