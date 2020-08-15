@@ -1,6 +1,8 @@
 import "package:flutter/material.dart";
+import "package:provider/provider.dart";
 
 import "../screens/edit_product_screen.dart";
+import "../providers/products_provider.dart";
 
 class ManageProductItem extends StatelessWidget {
   final String title;
@@ -28,12 +30,15 @@ class ManageProductItem extends StatelessWidget {
                   EditProductScreen.routeName,
                   arguments: id,
                 );
-              }, // TODO: Should pass product data to editable form screen
+              },
               color: Theme.of(context).primaryColor,
             ),
             IconButton(
               icon: Icon(Icons.delete),
-              onPressed: () {}, // TODO: Should delete data from memory
+              onPressed: () {
+                Provider.of<ProductsProvider>(context, listen: false)
+                    .removeProduct(id);
+              },
               color: Theme.of(context).errorColor,
             )
           ],
