@@ -113,10 +113,30 @@ class ProductsProvider with ChangeNotifier {
   }
 
   Future<void> updateProduct(Product newProduct) async {
+    final url = "$_url/products/${newProduct.id}.json";
     final productIndex =
         _items.indexWhere((product) => product.id == newProduct.id);
-    _items[productIndex] = newProduct;
-    notifyListeners();
+    if (productIndex >= 0) {
+      try {
+        final response = await http.patch(
+          url,
+          body: json.encode({
+            'title': newProduct.title,
+            'description': newProduct.description,
+            'price': newProduct.price,
+            'imageUrl': newProduct.imageUrl,
+          }),
+        );
+        print('Response code: ${response.statusCode}');
+        _items[productIndex] = newProduct;
+        notifyListeners();
+      } catch (error, stacktrace) {
+        print('Stack trace: ${stacktrace.toString()}');
+        throw error;
+      }
+    } else {
+      throw "Couldn't find product in local list via ID";
+    }
   }
 
   void removeProduct(String id) {
