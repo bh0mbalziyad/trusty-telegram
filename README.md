@@ -1,3 +1,2 @@
 # Shop
-
-A new Flutter project.
+> This is going take time to make.
