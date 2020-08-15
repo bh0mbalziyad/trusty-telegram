@@ -47,7 +47,7 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
                   return;
               }
             },
-            icon: Icon(Icons.more_vert_rounded),
+            icon: Icon(Icons.more_vert),
             itemBuilder: (_) => [
               PopupMenuItem(
                 child: Text('Only favorites'),
