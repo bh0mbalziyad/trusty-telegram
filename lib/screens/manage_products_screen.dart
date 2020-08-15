@@ -36,7 +36,7 @@ class ManageProductsScreen extends StatelessWidget {
             final product = productProvider.items[index];
             return Column(
               children: [
-                ManageProductItem(product.title, product.imageUrl),
+                ManageProductItem(product.id, product.title, product.imageUrl),
                 Divider(),
               ],
             );

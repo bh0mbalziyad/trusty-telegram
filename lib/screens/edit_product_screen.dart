@@ -1,6 +1,8 @@
 import "package:flutter/material.dart";
+import "package:provider/provider.dart";
 
 import "../providers/product.dart";
+import "../providers/products_provider.dart";
 
 class EditProductScreen extends StatefulWidget {
   static const routeName = "/edit-product";
@@ -13,7 +15,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
   final _descFocusNode = FocusNode();
   final _imageUrlController = TextEditingController();
   final _imageUrlFocusNode = FocusNode();
-
+  bool isInitBuild = true;
   final _form = GlobalKey<FormState>();
   var editedProduct = Product(
     id: null,
@@ -30,9 +32,25 @@ class _EditProductScreenState extends State<EditProductScreen> {
   }
 
   @override
+  void didChangeDependencies() {
+    if (!isInitBuild) return;
+    final productId = ModalRoute.of(context).settings.arguments as String;
+    if (productId == null) {
+      isInitBuild = false;
+      return;
+    }
+    editedProduct = Provider.of<ProductsProvider>(context, listen: false)
+        .findById(productId);
+    _imageUrlController.text = editedProduct.imageUrl;
+
+    isInitBuild = false;
+    super.didChangeDependencies();
+  }
+
+  @override
   dispose() {
-    _imageUrlFocusNode.dispose();
     _imageUrlFocusNode.removeListener(_updateImagePreview);
+    _imageUrlFocusNode.dispose();
     _priceFocusNode.dispose();
     _descFocusNode.dispose();
     _imageUrlController.dispose();
@@ -50,10 +68,10 @@ class _EditProductScreenState extends State<EditProductScreen> {
     final isFormValid = _form.currentState.validate();
     if (!isFormValid) return;
     _form.currentState.save();
-    print(editedProduct.description);
-    print(editedProduct.title);
-    print(editedProduct.price);
-    print(editedProduct.imageUrl);
+
+    Provider.of<ProductsProvider>(context, listen: false)
+        .addProduct(editedProduct);
+    Navigator.of(context).pop();
   }
 
   String _titleValidator(String fieldValue) {
@@ -109,6 +127,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                   decoration: InputDecoration(
                     labelText: 'Title',
                   ),
+                  initialValue: editedProduct.title,
                   textInputAction: TextInputAction.next,
                   validator: _titleValidator,
                   onSaved: (value) => editedProduct.title = value,
@@ -119,6 +138,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                   decoration: InputDecoration(
                     labelText: 'Price',
                   ),
+                  initialValue: editedProduct.price.toString(),
                   keyboardType: TextInputType.number,
                   textInputAction: TextInputAction.next,
                   validator: _priceValidator,
@@ -131,6 +151,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                   decoration: InputDecoration(
                     labelText: 'Description',
                   ),
+                  initialValue: editedProduct.description,
                   maxLines: 3,
                   keyboardType: TextInputType.multiline,
                   validator: _descriptionValidator,
