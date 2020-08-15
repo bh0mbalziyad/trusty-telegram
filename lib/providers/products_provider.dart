@@ -139,9 +139,22 @@ class ProductsProvider with ChangeNotifier {
     }
   }
 
-  void removeProduct(String id) {
-    _items.removeWhere((element) => element.id == id);
+  Future<void> removeProduct(String id) async {
+    final url = '$_url/products/$id';
+    final indexOfProduct = _items.indexWhere((element) => element.id == id);
+    var copyOfProduct = _items[indexOfProduct];
+    _items.removeAt(indexOfProduct);
     notifyListeners();
+    try {
+      final response = await http.delete(url);
+      if (response.statusCode == 405) throw "Operation unsuccessful";
+      copyOfProduct = null;
+    } catch (error, stacktrace) {
+      _items.insert(indexOfProduct, copyOfProduct);
+      notifyListeners();
+      print('Stacktrace: ${stacktrace.toString()}');
+      // throw error;
+    } finally {}
   }
 
   // void showFavorites() {
