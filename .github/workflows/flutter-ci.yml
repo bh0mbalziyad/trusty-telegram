@@ -1,0 +1,32 @@
+on:
+  push:
+    tags:
+      - "v*"
+name: Build and release APK
+jobs:
+  build:
+    name: Build APK
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-java@v1
+        with:
+          java-version: "12.x"
+      - run: echo $SIGNING_KEY | base64 -d > android/app/ShopKey.jks
+        env:
+          SIGNING_KEY: ${{ secrets.FLUTTER_APK_SIGNING_KEY }}
+      - uses: subosito/flutter-action@v1
+        with:
+          flutter-version: "1.7.8+hotfix.4"
+      - run: flutter pub get
+      - run: flutter build apk --split-per-abi
+        env:
+          KEY_STORE_PASSWORD: ${{ secrets.FLUTTER_KEYSTORE_STORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.FLUTTER_KEYSTORE_KEY_PASSWORD }}
+          ALIAS: ${{ secrets.FLUTTER_KEY_ALIAS }}
+          KEY_PATH: ShopKey.jks
+      - name: Create a release APK
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "build/app/outputs/apk/debug/*.apk"
+          token: ${{ secrets.TOKEN }}
