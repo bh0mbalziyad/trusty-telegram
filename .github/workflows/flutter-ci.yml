@@ -25,7 +25,7 @@ jobs:
           KEY_PASSWORD: ${{ secrets.FLUTTER_KEYSTORE_KEY_PASSWORD }}
           ALIAS: ${{ secrets.FLUTTER_KEY_ALIAS }}
           KEY_PATH: ShopKey.jks
-      - name: Create a release APK
+      - name: Create a Release APK
         uses: ncipollo/release-action@v1
         with:
           artifacts: "build/app/outputs/apk/debug/*.apk"
