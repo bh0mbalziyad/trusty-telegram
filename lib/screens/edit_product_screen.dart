@@ -64,8 +64,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     }
   }
 
-  // called when form is to be submitted
-  void _saveForm() async {
+  Future<void> _saveForm() async {
     final isFormValid = _form.currentState.validate();
     if (!isFormValid) return;
     _form.currentState.save();
@@ -83,7 +82,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
             .updateProduct(editedProduct);
       }
     } catch (error, stacktrace) {
-      showDialog(
+      print("Error: ${error.toString()}");
+      print("Stack trace: ${stacktrace.toString()}");
+      await showDialog(
         context: context,
         builder: (ctx) => AlertDialog(
           title: Text('An error occurred'),
@@ -99,18 +100,12 @@ class _EditProductScreenState extends State<EditProductScreen> {
           ],
         ),
       );
-      print("Error: ${error.toString()}");
-      print("Stack trace: ${stacktrace.toString()}");
+    } finally {
       setState(() {
         isLoading = false;
       });
-      return;
+      Navigator.of(context).pop();
     }
-
-    setState(() {
-      isLoading = false;
-    });
-    Navigator.of(context).pop();
   }
 
   String _titleValidator(String fieldValue) {
