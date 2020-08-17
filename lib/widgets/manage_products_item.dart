@@ -3,6 +3,7 @@ import "package:provider/provider.dart";
 
 import "../screens/edit_product_screen.dart";
 import "../providers/products_provider.dart";
+import "../models/http_exceptions.dart";
 
 class ManageProductItem extends StatelessWidget {
   final String title;
@@ -13,6 +14,7 @@ class ManageProductItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scaffold = Scaffold.of(context);
     return ListTile(
       title: Text(title),
       leading: CircleAvatar(
@@ -35,9 +37,18 @@ class ManageProductItem extends StatelessWidget {
             ),
             IconButton(
               icon: Icon(Icons.delete),
-              onPressed: () {
-                Provider.of<ProductsProvider>(context, listen: false)
-                    .removeProduct(id);
+              onPressed: () async {
+                try {
+                  await Provider.of<ProductsProvider>(context, listen: false)
+                      .removeProduct(id);
+                } catch (_) {
+                  scaffold.showSnackBar(SnackBar(
+                    content: const Text(
+                      'Unable to delete item',
+                      textAlign: TextAlign.center,
+                    ),
+                  ));
+                }
               },
               color: Theme.of(context).errorColor,
             )
