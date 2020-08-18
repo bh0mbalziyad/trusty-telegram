@@ -7,7 +7,7 @@ import 'product.dart';
 
 class ProductsProvider with ChangeNotifier {
   // bool _showFavoritesOnly = false;
-  final _url = "https://flutter-shop-123.firebaseio.com";
+  final String _url = "https://flutter-shop-123.firebaseio.com";
 
   List<Product> _items = [];
   // List<Product> _items = [

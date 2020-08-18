@@ -3,7 +3,6 @@ import "package:provider/provider.dart";
 
 import "../screens/edit_product_screen.dart";
 import "../providers/products_provider.dart";
-import "../models/http_exceptions.dart";
 
 class ManageProductItem extends StatelessWidget {
   final String title;
