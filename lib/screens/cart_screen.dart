@@ -4,12 +4,14 @@ import "package:provider/provider.dart";
 import "../providers/cart_provider.dart" show CartProvider;
 import "../providers/orders_provider.dart" show OrdersProvider;
 import "../widgets/cart_item.dart";
+// import "../models/http_exceptions.dart";
 
 class CartScreen extends StatelessWidget {
   static const routeName = '/cart-screen';
   @override
   Widget build(BuildContext context) {
     final cart = Provider.of<CartProvider>(context);
+    // final scaffold = Scaffold.of(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -47,6 +49,7 @@ class CartScreen extends StatelessWidget {
   }
 
   Widget totalCostWidget(BuildContext context, CartProvider cart) {
+    // final scaffold = Scaffold.of(context);
     return Card(
       margin: const EdgeInsets.all(15),
       child: Padding(
@@ -72,20 +75,58 @@ class CartScreen extends StatelessWidget {
               ),
               backgroundColor: Theme.of(context).primaryColor,
             ),
-            FlatButton(
-              child: Text(
-                'ORDER NOW',
-                style: TextStyle(color: Theme.of(context).primaryColor),
-              ),
-              onPressed: () {
-                Provider.of<OrdersProvider>(context, listen: false)
-                    .addOrder(cart.items.values.toList(), cart.totalAmount);
-                cart.clearCart();
-              },
-            ),
+            OrderButton(),
           ],
         ),
       ),
+    );
+  }
+}
+
+class OrderButton extends StatefulWidget {
+  // final ScaffoldState scaffold;
+
+  // OrderButton(this.scaffold);
+
+  const OrderButton({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  _OrderButtonState createState() => _OrderButtonState();
+}
+
+class _OrderButtonState extends State<OrderButton> {
+  bool _isLoading = false;
+  @override
+  Widget build(BuildContext context) {
+    final cart = Provider.of<CartProvider>(context);
+    return FlatButton(
+      disabledTextColor: Colors.grey,
+      child: _isLoading
+          ? CircularProgressIndicator()
+          : Text(
+              'ORDER NOW',
+              style: TextStyle(color: Theme.of(context).primaryColor),
+            ),
+      onPressed: (cart.totalAmount <= 0 || _isLoading)
+          ? null
+          : () async {
+              setState(() {
+                _isLoading = true;
+              });
+              try {
+                await Provider.of<OrdersProvider>(context, listen: false)
+                    .addOrder(cart.items.values.toList(), cart.totalAmount);
+                cart.clearCart();
+              } catch (error) {
+                print('Failed to place order.\n${error.toString()}');
+              } finally {
+                setState(() {
+                  _isLoading = false;
+                });
+              }
+            },
     );
   }
 }

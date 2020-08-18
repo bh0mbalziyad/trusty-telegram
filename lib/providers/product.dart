@@ -4,8 +4,6 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:shop/models/http_exceptions.dart';
 
-import './products_provider.dart';
-
 class Product with ChangeNotifier {
   String id;
   String title;
