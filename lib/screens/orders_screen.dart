@@ -5,46 +5,36 @@ import "../providers/orders_provider.dart" show OrdersProvider;
 import "../widgets/order_item.dart";
 import '../widgets/app_drawer.dart';
 
-class OrdersScreen extends StatefulWidget {
+class OrdersScreen extends StatelessWidget {
   static const routeName = "/orders";
 
   @override
-  _OrdersScreenState createState() => _OrdersScreenState();
-}
-
-class _OrdersScreenState extends State<OrdersScreen> {
-  bool _isLoading = false;
-  @override
-  initState() {
-    setState(() {
-      _isLoading = true;
-    });
-    Provider.of<OrdersProvider>(context, listen: false)
-        .fetchAndSetOrders()
-        .then((_) {
-      setState(() {
-        _isLoading = false;
-      });
-    });
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final ordersProvider = Provider.of<OrdersProvider>(context);
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Your orders'),
       ),
       drawer: AppDrawer(),
-      body: _isLoading
-          ? Center(child: CircularProgressIndicator())
-          : ListView.builder(
-              itemCount: ordersProvider.orders.length,
-              itemBuilder: (_, index) =>
-                  OrderItem(ordersProvider.orders[index]),
-            ),
+      // Very important concept right here
+      body: FutureBuilder(
+          future: Provider.of<OrdersProvider>(context, listen: false)
+              .fetchAndSetOrders(),
+          builder: (ctx, currentData) {
+            if (currentData.connectionState == ConnectionState.waiting)
+              return Center(child: CircularProgressIndicator());
+            if (currentData.hasError) {
+              print('Error');
+              return Center(child: Text('There was an error'));
+            }
+            return Consumer<OrdersProvider>(
+                builder: (ctx, ordersProvider, child) {
+              return ListView.builder(
+                itemCount: ordersProvider.orders.length,
+                itemBuilder: (_, index) =>
+                    OrderItem(ordersProvider.orders[index]),
+              );
+            });
+          }),
     );
   }
 }
