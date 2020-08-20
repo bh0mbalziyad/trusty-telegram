@@ -11,6 +11,17 @@ class AuthProvider with ChangeNotifier {
   String _userId;
   String apiKey;
 
+  bool get isAuth {
+    return token != null;
+  }
+
+  String get token {
+    if (_token == null) return null;
+    if (_tokenExpiryDate == null) return null;
+    if (!_tokenExpiryDate.isAfter(DateTime.now())) return null;
+    return _token;
+  }
+
   AuthProvider() {
     this.apiKey = "AIzaSyBBn55bheAZUr6Z4-t2zhkw-RChrOyTe1g"; // Load from env
   }
@@ -46,8 +57,19 @@ class AuthProvider with ChangeNotifier {
             'returnSecureToken': true,
           }));
       final responseBody = json.decode(response.body);
-      if (responseBody['error'] == null) return;
-      throw HttpException(responseBody['error']['message']);
+      if (responseBody['error'] != null) {
+        throw HttpException(responseBody['eror']['message']);
+      }
+      _token = responseBody['idToken'];
+      _userId = responseBody['localId'];
+      _tokenExpiryDate = DateTime.now().add(
+        Duration(
+          seconds: int.parse(
+            responseBody['expiresIn'],
+          ),
+        ),
+      );
+      notifyListeners();
     } catch (error) {
       throw error;
     }
