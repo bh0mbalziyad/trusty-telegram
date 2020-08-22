@@ -28,8 +28,8 @@ class Product with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> toggleFavorite() async {
-    final String url = '$_url/products/${this.id}.json';
+  Future<void> toggleFavorite(String token) async {
+    final String url = '$_url/products/${this.id}.json?auth=$token';
     final oldStatus = this.isFavorite;
     _setIsFavorite(!this.isFavorite);
     try {
